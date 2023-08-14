@@ -1,2 +1,1 @@
-# devops
-DevOps stuff
+# DevOps stuff
