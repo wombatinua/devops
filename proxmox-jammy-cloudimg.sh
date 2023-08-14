@@ -11,12 +11,13 @@ wget -O jammy-cloud.img https://cloud-images.ubuntu.com/minimal/daily/jammy/curr
 
 virt-customize -a jammy-cloud.img --update
 virt-customize -a jammy-cloud.img --install qemu-guest-agent
+virt-customize -a jammy-cloud.img --install rsyslog
 virt-customize -a jammy-cloud.img --install fail2ban
 virt-customize -a jammy-cloud.img --install mc
 
 virt-customize -a jammy-cloud.img --run-command "sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
 virt-customize -a jammy-cloud.img --run-command "cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
-virt-customize -a jammy-cloud.img --run-command "systemctl enable fail2ban"
+# virt-customize -a jammy-cloud.img --run-command "systemctl enable fail2ban"
 
 sudo qm create $VMID --name "jammy-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
 sudo qm importdisk $VMID jammy-cloud.img $STORAGE --format qcow2
