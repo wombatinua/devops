@@ -23,6 +23,7 @@ if qm list | grep -q "$VMID "; then
     qm stop $VMID --skiplock
     qm set $VMID --protection 0
     qm destroy $VMID --skiplock
+    rm /var/lib/rrdcached/db/pve2-vm/$VMID
 fi
 
 qm create $VMID --name "jammy-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
