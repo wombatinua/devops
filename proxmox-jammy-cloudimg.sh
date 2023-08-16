@@ -2,28 +2,43 @@
 
 VMID=1024
 STORAGE="local-nvme"
+PACKAGES=("qemu-guest-agent" "rsyslog" "fail2ban" "ufw" "mc")
+COMMANDS=(
+	"sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
+	"ufw allow OpenSSH && ufw --force enable"
+	"cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
+	"systemctl enable fail2ban"
+)
 
 wget -O jammy-cloud.img https://cloud-images.ubuntu.com/minimal/daily/jammy/current/jammy-minimal-cloudimg-amd64.img
 
 # apt update -y && apt install libguestfs-tools -y
 
 virt-customize -a jammy-cloud.img --update
-virt-customize -a jammy-cloud.img --install qemu-guest-agent
-virt-customize -a jammy-cloud.img --install rsyslog
-virt-customize -a jammy-cloud.img --install fail2ban
-virt-customize -a jammy-cloud.img --install ufw
-virt-customize -a jammy-cloud.img --install mc
+#virt-customize -a jammy-cloud.img --install qemu-guest-agent
+#virt-customize -a jammy-cloud.img --install rsyslog
+#virt-customize -a jammy-cloud.img --install fail2ban
+#virt-customize -a jammy-cloud.img --install ufw
+#virt-customize -a jammy-cloud.img --install mc
 
-virt-customize -a jammy-cloud.img --run-command "sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
-virt-customize -a jammy-cloud.img --run-command "ufw allow OpenSSH && ufw --force enable"
-virt-customize -a jammy-cloud.img --run-command "cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
-virt-customize -a jammy-cloud.img --run-command "systemctl enable fail2ban"
+for package in "${PACKAGES[@]}"; do
+	virt-customize -a jammy-cloud.img --install "$package"
+done
+
+#virt-customize -a jammy-cloud.img --run-command "sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
+#virt-customize -a jammy-cloud.img --run-command "ufw allow OpenSSH && ufw --force enable"
+#virt-customize -a jammy-cloud.img --run-command "cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
+#virt-customize -a jammy-cloud.img --run-command "systemctl enable fail2ban"
+
+for command in "${COMMANDS[@]}"; do
+	virt-customize -a jammy-cloud.img --run-command "$command"
+done
 
 if qm list | grep -q "$VMID "; then
-    qm stop $VMID --skiplock
-    qm set $VMID --protection 0
-    qm destroy $VMID --skiplock
-    rm /var/lib/rrdcached/db/pve2-vm/$VMID
+	qm stop $VMID --skiplock
+	qm set $VMID --protection 0
+	qm destroy $VMID --skiplock
+	rm /var/lib/rrdcached/db/pve2-vm/$VMID
 fi
 
 qm create $VMID --name "jammy-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
