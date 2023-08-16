@@ -2,7 +2,8 @@
 
 VMID=1024
 STORAGE="local-nvme"
-PACKAGES=("qemu-guest-agent" "rsyslog" "net-tools" "iputils-ping" "fail2ban" "ufw" "mc")
+PACKAGES=("qemu-guest-agent" "fail2ban" "mc")
+
 COMMANDS=(
 	"sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
 	"ufw allow OpenSSH && ufw --force enable"
@@ -10,7 +11,7 @@ COMMANDS=(
 	"systemctl enable fail2ban"
 )
 
-wget -O jammy-cloud.img https://cloud-images.ubuntu.com/minimal/daily/jammy/current/jammy-minimal-cloudimg-amd64.img
+wget -O jammy-cloud.img https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
 # apt install libguestfs-tools -y
 virt-customize -a jammy-cloud.img --update
