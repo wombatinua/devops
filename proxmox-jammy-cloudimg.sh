@@ -2,7 +2,7 @@
 
 VMID=1024
 STORAGE="local-nvme"
-PACKAGES=("qemu-guest-agent" "rsyslog" "fail2ban" "ufw" "mc")
+PACKAGES=("qemu-guest-agent" "rsyslog" "net-tools" "iputils-ping" "fail2ban" "ufw" "mc")
 COMMANDS=(
 	"sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
 	"ufw allow OpenSSH && ufw --force enable"
