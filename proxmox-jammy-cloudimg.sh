@@ -57,7 +57,7 @@ qm set $VMID --cipassword ubuntu
 qm set $VMID --searchdomain local
 qm set $VMID --nameserver 1.1.1.1
 qm set $VMID --ciupgrade 1
-qm set $VMID --ipconfig0 "ip=dhcp"
+qm set $VMID --ipconfig0 "ip=dhcp,ip6=auto"
 
 rm -f jammy-cloud.img
 # qm template $VMID
