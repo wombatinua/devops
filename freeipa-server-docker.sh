@@ -21,7 +21,7 @@ services:
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - /opt/docker/freeipa-server/data:/data:Z
     tmpfs:
       - /var/log/journal
