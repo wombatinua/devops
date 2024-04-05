@@ -38,9 +38,9 @@ fi
 qm create $VMID --name "jammy-cloud" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
 qm importdisk $VMID jammy-cloud.img $STORAGE --format qcow2
 qm set $VMID --description "Ubuntu Jammy Cloud ($(date +%d%m%Y%H%M))"
-qm set $VMID --serial0 socket --vga serial0
+qm set $VMID --serial0 socket #--vga serial0
 qm set $VMID --scsihw virtio-scsi-single
-qm set $VMID --scsi0 $STORAGE:$VMID/vm-$VMID-disk-0.qcow2,cache=writeback,discard=on,iothread=1
+qm set $VMID --scsi0 $STORAGE:$VMID/vm-$VMID-disk-0.qcow2,discard=on,iothread=1
 qm disk resize $VMID scsi0 8G
 
 # configure vm
@@ -53,10 +53,10 @@ qm set $VMID --protection 1
 # configure cloud-init
 qm set $VMID --ide2 $STORAGE:cloudinit
 qm set $VMID --ciuser ubuntu
-qm set $VMID --cipassword ubuntu
+qm set $VMID --cipassword $6$psFcq1CctwQHFymC$1pC3CjimAU8eu5q0JxlNbUWhgfR8rc0Az8M/beip/j.J9bTkzDXZ3H6KUPSrwZvrba5Z.CXlpg9m9/bBTl/570 # ubuntu (mkpasswd -m sha-512)
 qm set $VMID --searchdomain local
 qm set $VMID --nameserver 1.1.1.1
-qm set $VMID --ciupgrade 1
+qm set $VMID --ciupgrade 0
 qm set $VMID --ipconfig0 "ip=dhcp"
 
 rm -f jammy-cloud.img
