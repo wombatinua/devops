@@ -5,7 +5,7 @@ STORAGE="local-nvme"
 PACKAGES=("qemu-guest-agent" "fail2ban" "mc")
 
 COMMANDS=(
-	"sed -i s/^PasswordAuthentication.*/PasswordAuthentication\ yes/ /etc/ssh/sshd_config"
+	"sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/60-cloudimg-settings.conf"
 	"ufw allow OpenSSH && ufw --force enable"
 	"cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
 	"systemctl enable fail2ban"
@@ -13,7 +13,7 @@ COMMANDS=(
 
 wget -O jammy-cloud.img https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
-# apt install libguestfs-tools -y
+apt install libguestfs-tools -y
 virt-customize -a jammy-cloud.img --update
 
 # install packages
@@ -51,9 +51,9 @@ qm set $VMID --agent enabled=1,fstrim_cloned_disks=1
 qm set $VMID --protection 1
 
 # configure cloud-init
-qm set $VMID --ide2 $STORAGE:cloudinit
+qm set $VMID --ide0 $STORAGE:cloudinit
 qm set $VMID --ciuser ubuntu
-qm set $VMID --cipassword $6$psFcq1CctwQHFymC$1pC3CjimAU8eu5q0JxlNbUWhgfR8rc0Az8M/beip/j.J9bTkzDXZ3H6KUPSrwZvrba5Z.CXlpg9m9/bBTl/570 # ubuntu (mkpasswd -m sha-512)
+qm set $VMID --cipassword ubuntu
 qm set $VMID --searchdomain local
 qm set $VMID --nameserver 1.1.1.1
 qm set $VMID --ciupgrade 0
