@@ -13,7 +13,7 @@ COMMANDS=(
 
 wget -O jammy-cloud.img https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
-apt install libguestfs-tools -y
+apt install libguestfs-tools dhcpcd-base -y
 virt-customize -a jammy-cloud.img --update
 
 # install packages
