@@ -13,7 +13,7 @@ COMMANDS=(
 
 wget -O noble-cloud.img https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
 
-apt install libguestfs-tools -y
+apt install libguestfs-tools dhcpcd-base -y
 virt-customize -a noble-cloud.img --update
 
 # install packages
